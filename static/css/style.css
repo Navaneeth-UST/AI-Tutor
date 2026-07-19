@@ -1,0 +1,348 @@
+/* ---- Design tokens ----
+   Subject: a tutor whose whole method is "answer first, then get corrected in the margin".
+   Palette: chalkboard ink surrounding a parchment notebook page; amber ink for the correction
+   (a teacher's pen, but warm, not red); sage for what the learner already got right.
+   Type: Fraunces (a teacher's handwriting/marginalia voice, used in italic for annotations),
+   Inter for reading, IBM Plex Mono for term names and the mastery ledger (data register).
+*/
+:root {
+  --ink-bg: #1b2027;
+  --ink-bg-raised: #232a33;
+  --paper: #f3ecdc;
+  --paper-line: #e2d6b8;
+  --paper-shadow: rgba(20, 16, 8, 0.28);
+  --ink-text: #2a2620;
+  --ink-muted: #746c5c;
+  --amber: #b8811a;
+  --amber-deep: #8f6414;
+  --sage: #4f7a5b;
+  --clay: #8a4b32;
+  --rule: rgba(42, 38, 32, 0.14);
+  --focus: #7c93a8;
+
+  --font-display: "Fraunces", serif;
+  --font-body: "Inter", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--ink-bg);
+  background-image:
+    radial-gradient(circle at 15% 0%, rgba(255,255,255,0.035), transparent 45%),
+    radial-gradient(circle at 100% 100%, rgba(255,255,255,0.03), transparent 40%);
+  font-family: var(--font-body);
+  color: var(--ink-text);
+}
+
+.frame {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 28px 24px 48px;
+}
+
+/* ---- Header ---- */
+.bench-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 22px;
+  color: var(--paper);
+}
+
+.brand { display: flex; align-items: center; gap: 14px; }
+
+.brand-mark {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 600;
+  color: var(--amber);
+  line-height: 1;
+}
+
+.brand-text h1 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  letter-spacing: 0.2px;
+}
+
+.brand-text p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: rgba(243, 236, 220, 0.6);
+}
+
+.reset-btn {
+  background: transparent;
+  border: 1px solid rgba(243, 236, 220, 0.25);
+  color: rgba(243, 236, 220, 0.75);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 9px 14px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.reset-btn:hover { border-color: var(--amber); color: var(--paper); }
+.reset-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---- Grid ---- */
+.bench-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .bench-grid { grid-template-columns: 1fr; }
+}
+
+/* ---- Notebook panel ---- */
+.notebook {
+  background: var(--paper);
+  border-radius: 14px;
+  box-shadow: 0 20px 45px var(--paper-shadow);
+  display: flex;
+  flex-direction: column;
+  min-height: 560px;
+  max-height: 78vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.notebook::before {
+  /* faint ruled-paper lines */
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 37px,
+    var(--rule) 38px
+  );
+  opacity: 0.55;
+}
+
+.thread {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 30px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  position: relative;
+}
+
+.system-entry .system-line {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+  margin: 0 0 4px;
+}
+.hint {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  background: rgba(184, 129, 26, 0.12);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--amber-deep);
+}
+
+.entry { max-width: 100%; }
+
+.entry.tutor .bubble,
+.entry.user .bubble {
+  font-size: 15px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.entry.user {
+  align-self: flex-end;
+  max-width: 78%;
+}
+.entry.user .bubble {
+  background: #eadfc2;
+  border: 1px solid var(--paper-line);
+  border-radius: 10px 10px 2px 10px;
+  padding: 12px 15px;
+}
+
+.entry.tutor { max-width: 88%; }
+.entry.tutor .bubble {
+  padding: 2px 2px 2px 16px;
+  border-left: 3px solid var(--ink-muted);
+}
+
+/* ---- Margin annotation: the signature element ----
+   When the tutor corrects the user, their paraphrased claim is shown in a quiet
+   quoted line, and the correction is rendered like handwritten marginalia in amber ink,
+   with a small phase tag (mono) indicating where we are in the elicitation cycle. */
+.annotation {
+  margin-top: 10px;
+  border-left: 3px solid var(--amber);
+  padding: 8px 0 8px 16px;
+  background: linear-gradient(to right, rgba(184,129,26,0.07), transparent 70%);
+  border-radius: 0 6px 6px 0;
+}
+.annotation.affirm { border-left-color: var(--sage); background: linear-gradient(to right, rgba(79,122,91,0.08), transparent 70%); }
+
+.annotation .you-said {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin: 0 0 4px;
+}
+.annotation .you-said span { font-style: italic; }
+
+.annotation .correction {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 15.5px;
+  color: var(--amber-deep);
+  margin: 0;
+  line-height: 1.5;
+}
+.annotation.affirm .correction { color: var(--sage); }
+
+.phase-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--clay);
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+.phase-tag.eliciting { background: #5b6672; }
+.phase-tag.correcting { background: var(--amber-deep); }
+.phase-tag.reinforcing { background: var(--clay); }
+.phase-tag.mastered { background: var(--sage); }
+
+.typing {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--ink-muted);
+}
+
+/* ---- Composer ---- */
+.composer {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  padding: 16px 22px 20px;
+  border-top: 1px solid var(--paper-line);
+  background: var(--paper);
+}
+
+#message-input {
+  flex: 1;
+  resize: none;
+  border: 1px solid var(--paper-line);
+  background: #fbf7ec;
+  border-radius: 9px;
+  padding: 11px 13px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  color: var(--ink-text);
+}
+#message-input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+#send-btn {
+  background: var(--ink-text);
+  color: var(--paper);
+  border: none;
+  border-radius: 9px;
+  padding: 12px 20px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+#send-btn:hover { background: var(--amber-deep); }
+#send-btn:disabled { opacity: 0.5; cursor: default; }
+#send-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* ---- Ledger sidebar ---- */
+.ledger {
+  background: var(--ink-bg-raised);
+  border: 1px solid rgba(243,236,220,0.08);
+  border-radius: 14px;
+  padding: 20px;
+  color: var(--paper);
+  position: sticky;
+  top: 20px;
+}
+
+.ledger h2 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  margin: 0 0 4px;
+}
+.ledger-sub {
+  font-size: 12.5px;
+  color: rgba(243,236,220,0.55);
+  margin: 0 0 16px;
+  line-height: 1.5;
+}
+
+.ledger-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
+
+.ledger-empty {
+  font-size: 13px;
+  color: rgba(243,236,220,0.4);
+  font-style: italic;
+}
+
+.ledger-item .term-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+.ledger-item .term-name {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--paper);
+}
+.ledger-item .term-pct {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(243,236,220,0.5);
+}
+.ledger-bar-track {
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(243,236,220,0.12);
+  overflow: hidden;
+}
+.ledger-bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--amber), var(--sage));
+  transition: width 0.4s ease;
+}
+
+/* ---- Scrollbar (webkit) ---- */
+.thread::-webkit-scrollbar { width: 8px; }
+.thread::-webkit-scrollbar-thumb { background: rgba(42,38,32,0.18); border-radius: 999px; }
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  .ledger-bar-fill { transition: none; }
+}
