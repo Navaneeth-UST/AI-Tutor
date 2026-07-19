@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Socratic Bench — an AI/Software terminology tutor that teaches by asking first
 
 A Flask app that teaches AI and software engineering terms through **live elicitation**,
@@ -22,3 +23,6 @@ the backend parses to drive the "concept ledger" sidebar. No separate NLP pipeli
 the LLM does the diagnosis.
 
 ## Project structure
+=======
+# AI-Tutor
+>>>>>>> 53c5101206a9412d867c794deb303ad4e7bf15b2
