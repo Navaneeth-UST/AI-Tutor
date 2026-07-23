@@ -1,60 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Socratic Bench — learn by being asked</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>UST AI Tutor</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/style.css') }}">
+
 </head>
+
 <body>
-  <div class="frame">
-    <header class="bench-header">
-      <div class="brand">
-        <span class="brand-mark">§</span>
-        <div class="brand-text">
-          <h1>Socratic Bench</h1>
-          <p>You answer first. Then I correct the margin.</p>
-        </div>
-      </div>
-      <button id="reset-btn" class="reset-btn" type="button">Start a fresh notebook</button>
-    </header>
 
-    <main class="bench-grid">
-      <section class="notebook" aria-label="Tutoring conversation">
-        <div id="thread" class="thread">
-          <div class="entry system-entry">
-            <p class="system-line">
-              Ask about any AI or software term — <span class="hint">token</span>,
-              <span class="hint">REST</span>, <span class="hint">race condition</span>,
-              <span class="hint">gradient descent</span> — anything. I won't define it right away.
-              I'll ask what you already think it means first, then correct the margin.
-            </p>
-          </div>
-        </div>
+<div class="frame">
 
-        <form id="composer" class="composer" autocomplete="off">
-          <textarea
-            id="message-input"
-            placeholder="e.g. What is a token?"
-            rows="2"
-            required
-          ></textarea>
-          <button type="submit" id="send-btn">Send</button>
-        </form>
-      </section>
+<header class="bench-header">
 
-      <aside class="ledger" aria-label="Concept ledger">
-        <h2>Concept ledger</h2>
-        <p class="ledger-sub">Terms you've opened this session, and how solid they are.</p>
-        <ul id="ledger-list" class="ledger-list">
-          <li class="ledger-empty">Nothing opened yet — ask your first question.</li>
-        </ul>
-      </aside>
-    </main>
-  </div>
+<div class="brand">
 
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<div class="brand-text">
+
+<h1>AI Tutor</h1>
+
+<p>Learn through guided questioning</p>
+
+</div>
+
+</div>
+
+<button
+id="reset-btn"
+class="reset-btn">
+
+New Session
+
+</button>
+
+</header>
+
+<main class="bench-grid">
+
+<section
+class="notebook">
+
+<div
+id="thread"
+class="thread">
+
+<div class="entry system-entry">
+
+<p class="system-line">
+
+👋 Welcome to <strong>AI Tutor</strong>.
+
+<br><br>
+
+Ask any question related to
+
+<b>AI</b>,
+
+<b>Programming</b>,
+
+<b>Cloud</b>,
+
+<b>Databases</b>,
+
+<b>System Design</b>
+
+or
+
+<b>Software Engineering</b>.
+
+<br><br>
+
+The tutor will first ask what you think a term means,
+then correct and explain it step-by-step.
+
+</p>
+
+</div>
+
+</div>
+
+<form
+id="composer"
+class="composer">
+
+<textarea
+
+id="message-input"
+
+rows="2"
+
+placeholder="Ask your question..."
+
+required>
+
+</textarea>
+
+<button
+id="send-btn"
+type="submit">
+
+Send
+
+</button>
+
+</form>
+
+</section>
+
+<aside class="ledger">
+
+<h2>
+
+Learning Progress
+
+</h2>
+
+<p class="ledger-sub">
+
+Concept mastery during this session
+
+</p>
+
+<ul
+id="ledger-list"
+class="ledger-list">
+
+<li class="ledger-empty">
+
+No concepts learned yet.
+
+</li>
+
+</ul>
+
+</aside>
+
+</main>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
 </body>
+
 </html>

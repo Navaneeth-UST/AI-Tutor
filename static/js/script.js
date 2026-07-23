@@ -23,7 +23,9 @@ function addTypingIndicator() {
   const el = document.createElement("div");
   el.className = "entry tutor";
   el.id = "typing-indicator";
-  el.innerHTML = `<div class="bubble"><span class="typing">thinking through your answer…</span></div>`;
+  el.innerHTML = `<div class="bubble"><span class="typing"><div class="typing">
+🤖 AI Tutor is analyzing your response...
+</div></span></div>`;
   thread.appendChild(el);
   scrollToBottom();
 }
@@ -45,6 +47,10 @@ function addTutorEntry(data) {
     mastered: "Looking solid",
   }[phase] || "Tutor";
 
+  // Metrics are intentionally not shown in the UI. They are kept server-side
+  // for validation and routing logic, but we avoid exposing numeric scores
+  // to learners to keep the experience focused on teaching.
+
   let annotationHtml = "";
   if (correction) {
     const isAffirm = phase === "mastered";
@@ -55,9 +61,12 @@ function addTutorEntry(data) {
       </div>`;
   }
 
+  const metricsHtml = "";
+
   el.innerHTML = `
     <span class="phase-tag ${phase}">${tagLabel}</span>
     <div class="bubble">${escapeHtml(reply)}</div>
+    ${metricsHtml}
     ${annotationHtml}
   `;
   thread.appendChild(el);
@@ -74,6 +83,9 @@ function renderLedger(ledger) {
     ledgerList.innerHTML = `<li class="ledger-empty">Nothing opened yet — ask your first question.</li>`;
     return;
   }
+  // Sort by mastery descending so most-progressed concepts are visible first
+  entries.sort((a, b) => b[1] - a[1]);
+
   ledgerList.innerHTML = entries
     .map(([term, mastery]) => `
       <li class="ledger-item">
@@ -115,6 +127,17 @@ async function sendMessage(message) {
 
     addTutorEntry(data);
     renderLedger(data.ledger);
+      // If the tutor is asking (eliciting), prompt the learner to answer briefly
+      try {
+        if (data.phase === 'eliciting') {
+          input.placeholder = 'Share your current understanding in one sentence...';
+          input.focus();
+        } else {
+          input.placeholder = 'Ask your question...';
+        }
+      } catch (e) {
+        // noop
+      }
   } catch (err) {
     removeTypingIndicator();
     addTutorEntry({
@@ -151,8 +174,7 @@ resetBtn.addEventListener("click", async () => {
         Fresh notebook. Ask about any AI or software term —
         <span class="hint">token</span>, <span class="hint">REST</span>,
         <span class="hint">race condition</span>, <span class="hint">gradient descent</span> —
-        anything. I won't define it right away. I'll ask what you already think it means first,
-        then correct the margin.
+        anything. I will ask what you already think it means first, then correct and explain it.
       </p>
     </div>`;
   renderLedger({});
